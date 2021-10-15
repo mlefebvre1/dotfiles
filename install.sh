@@ -1,6 +1,7 @@
 # get zsh plugins
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting.git
-git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+cd ~/.oh-my-zsh/custom/plugins
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
+git clone https://github.com/zsh-users/zsh-autosuggestions
 
 # Overwrite .zshrc
 echo "# If you come from bash you might have to change your $PATH.
