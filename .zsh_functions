@@ -1,0 +1,120 @@
+msim () { /opt/mentor/modelsim_dlx/bin/vsim "$*"; }
+
+for k in /opt/Xilinx/Vivado/2*; do
+    VERSION="`echo $k|cut -d/ -f5`"
+    CMD=". /opt/Xilinx/Vivado/${VERSION}/settings64.sh; _JAVA_OPTIONS='$_JAVA_OPTIONS -Dsun.java2d.xrender=True' /opt/Xilinx/Vivado/${VERSION}/bin/vivado -nolog -nojournal"
+    eval "v${VERSION}() { bash -c \"${CMD} \$*\"; }"
+    eval "xsdk${VERSION}() { . /opt/Xilinx/SDK/${VERSION}/settings64.sh; /opt/Xilinx/SDK/${VERSION}/bin/xsdk -eclipseargs org.eclipse.swt.internal.gtk.cairoGraphics=false \$*; }"
+    eval "xsct${VERSION}() { /opt/Xilinx/SDK/${VERSION}/bin/xsct; }"
+done
+
+
+licimg () {
+    if [ ${1} = "-h" ]; then
+    echo ""
+    echo "licimg <fin> <fout> <mac>"
+    echo ""
+    echo " fin: path to input file"
+    echo ""
+    echo " fout: path to output file"
+    echo ""
+    echo " mac: device MAC address for licensing (optional, defaults to LICENSE_NOT_TIED_TO_MAC)"
+    echo ""
+    return 1
+    fi
+    fin=${1}
+    fout=${2}
+    mac=${3:-LICENSE_NOT_TIED_TO_MAC}
+
+    ${FWEM1_REPO_PATH}/emb078_pld00_dev_app_lwip/scripts/tools/TargetLoadGenerator -i ${fin} -o ${IMGS_PATH}/${fout}.img -m ${mac}
+}
+
+em1_build () {
+  hdf=${1}
+  platform=${2}
+  nbchn=${3}
+  imgname=${2}_${4}
+  mac=${5:-LICENSE_NOT_TIED_TO_MAC}
+
+  srcdir=$(pwd)
+
+
+  cp ${hdf} ${FWEM1_REPO_PATH}/emb078_pld00_dev_hps/${platform}.hdf
+
+  cd ${FWEM1_REPO_PATH}/emb078_pld00_dev_app_lwip/scripts/
+  ./ChangeHDF.sh -p ${platform} -d ${nbchn} -o -Os
+  ./CreateImages.ex 2016.2
+
+
+  licimg  ${FWEM1_REPO_PATH}/emb078_pld00_dev_app_lwip/Debug/emb078_pld00_dev_app_lwip.img ${imgname} ${mac}
+
+  cd ${srcdir}
+}
+
+em2_build () {
+   if [[ "${1}" == "-h" ]]; then
+      echo "em2_build <embin> <platform> <image_name> (<skip_fw>)"
+      echo ""
+      echo "    embin:      FPGA embin file to assemble in image"
+      echo "    platform:   use 'em2_build -l' to list all available platforms to build"
+      echo "    image_name: desired name for final image file"
+      echo "    skip_fw:    -optional-"
+      echo "                add 'skip_fw' keyword to skip firmware build step (e.g. if already executed previously)"
+      echo ""
+      echo ""
+      echo "em2_build -l"
+      echo "    List the available firmware platforms to build."
+      echo ""
+      echo "em2_build -h"
+      echo "    Show this help message."
+      echo ""
+      return 1
+   fi
+
+   if [[ "${1}" == "-l" ]]; then
+      genimg=0
+      docker_entry_cmd="./scripts/build-helper -f list -C"
+   else
+      bin=${1}
+      platform=${2}
+      imgname=${3}
+      skip_fw_build=${4:-NO_SKIP}
+
+      genimg=1
+
+      if [[ "${skip_fw_build}" == "skip_fw" ]]; then
+         docker_entry_cmd="cd ./Install/firmware/${platform}/images; cd \`ls -d */ | head -n1\`; ./create-image-file -S -i dummy.img -s ../../../../../${imgname}.img -f ../../../../../fpga_tmp.embin; rm dummy.img"
+      else
+         docker_entry_cmd="./scripts/build-helper -f ${platform} -d; cd ./Install/firmware/${platform}/images; cd \`ls -d */ | head -n1\`; ./create-image-file -S -i dummy.img -s ../../../../../${imgname}.img -f ../../../../../fpga_tmp.embin; rm dummy.img"
+      fi
+   fi
+
+   echo "${docker_entry_cmd}"
+   srcdir=$(pwd)
+
+   if [[ $genimg == 1 ]]; then
+      cp ${bin} ${FWEM2_REPO_PATH}/fpga_tmp.embin
+   fi
+
+  cd ${FWEM2_REPO_PATH}
+
+   . docker.env
+   docker-compose run fpga-dev /bin/bash -c "${docker_entry_cmd}"
+
+   if [[ $genimg == 1 ]]; then
+      mv ./${imgname}.img ${IMGS_PATH}
+      rm ./fpga_tmp.embin
+   fi
+
+   cd ${srcdir}
+}
+
+if [ -z "$SSH_AUTH_SOCK" ]; then
+   # Check for a currently running instance of the agent
+   RUNNING_AGENT="`ps -ax | grep 'ssh-agent -s' | grep -v grep | wc -l | tr -d '[:space:]'`"
+   if [ "$RUNNING_AGENT" = "0" ]; then
+        # Launch a new instance of the agent
+        ssh-agent -s &> $HOME/.ssh/ssh-agent
+   fi
+   eval `cat $HOME/.ssh/ssh-agent`
+fi
