@@ -14,3 +14,4 @@ export DOCKER_USER=$USER
 # USER aliases
 alias fpga-bs1='ssh -Y lefebvre@FPGA-BS1.ca.riedel.net'
 alias fpga-bs2='ssh -Y lefebvre@FPGA-BS2.ca.riedel.net'
+alias xilinx-licserv='ssh -Y lefebvre@xilinx.ca.riedel.net'
