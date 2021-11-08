@@ -1,5 +1,5 @@
-export XILINXD_LICENSE_FILE=2100@licserv.embrionix.net
-export MGLS_LICENSE_FILE=1717@licserv.embrionix.net
+export XILINXD_LICENSE_FILE=2100@xilinx.ca.riedel.net
+export MGLS_LICENSE_FILE=1717@modelsim.ca.riedel.net
 export EM2_TOOLCHAIN_PATH=/opt/gcc_arm_tool/gcc-arm-none-eabi-8-2018-q4-major
 export PATH=/opt/SEGGER/JLink/:$PATH
 
