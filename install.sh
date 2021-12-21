@@ -9,6 +9,6 @@ cp .zsh_functions ~/.zsh_functions
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 
-git clone https://github.com/skylerlee/zeta-zsh-theme.git ~/.oh-my-zsh/custom/themes/zeta-zsh-theme
-cp ~/.oh-my-zsh/custom/themes/zeta-zsh-theme/zeta.zsh-theme ~/.oh-my-zsh/themes/zeta.zsh-theme
+git clone https://github.com/cdimascio/lambda-zsh-theme.git && cp lambda-zsh-theme/cdimascio-lambda.zsh-theme ~/.oh-my-zsh/custom/themes
+
 exit 0
