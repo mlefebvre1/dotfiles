@@ -1,0 +1,57 @@
+{
+    // ---------------------------------------
+    // Generic editor configs
+    "files.trimTrailingWhitespace": true,
+    "editor.renderWhitespace": "all",
+    "editor.minimap.showSlider": "always",
+    "editor.tabSize": 4,
+    "editor.wordWrapColumn": 120,
+    "editor.fontLigatures": true,
+    "editor.fontFamily": "JetBrains Mono",
+    "editor.fontWeight": "bold",
+    // ---------------------------------------
+    // Dotfiles config
+    "dotfiles.repository": " mlefebvre1/dotfiles",
+    "dotfiles.targetPath": "~/dotfiles",
+    "dotfiles.installCommand": "~/dotfiles/install.sh",
+    // ---------------------------------------
+    // SSH configs
+    // ---------------------------------------
+    // Others
+    "hediet.vscode-drawio.theme": "atlas",
+    "workbench.iconTheme": "material-icon-theme",
+    // ---------------------------------------
+    // Terminal configs
+    "terminal.integrated.defaultProfile.linux": "zsh",
+    "workbench.colorCustomizations": {
+        "scrollbarSlider.activeBackground": "#c99039",
+        "scrollbarSlider.hoverBackground": "#cf4646",
+        "scrollbarSlider.background": "#546fc9",
+    },
+    "rust-analyzer.check.command": "clippy",
+    "rust-analyzer.cargo-watch.enable": true,
+    "extensions.ignoreRecommendations": true,
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "[go]": {
+        "editor.defaultFormatter": "golang.go"
+    },
+    "redhat.telemetry.enabled": false,
+    "workbench.colorTheme": "Andromeda Bordered",
+    "go.toolsManagement.autoUpdate": true,
+    "cmake.options.statusBarVisibility": "visible",
+    "editor.formatOnSave": true,
+    "clangd.detectExtensionConflicts": false,
+    "window.zoomLevel": 1,
+    "cmake.pinnedCommands": [
+        "workbench.action.tasks.configureTaskRunner",
+        "workbench.action.tasks.runTask"
+    ],
+    "cmake.configureOnOpen": false,
+    "clangd.arguments": [
+        "--query-driver=/usr/bin/g++",
+        "--header-insertion=never"
+    ],
+    "tabnine.experimentalAutoImports": true
+}
